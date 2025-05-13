@@ -22,9 +22,9 @@ public class ProductoService {
         return ProductoRepository.save(producto);
     }
 
-    //public Producto findAllId(String cod) {
-        //return ProductoRepository.findBy(cod).getClass();
-    ///}
+    public Producto BuscarPorCod(String cod) {
+        return ProductoRepository.findByCod(cod).orElse(null);
+    }
 
     public Producto BuscarPorIdId(long id) {
         return ProductoRepository.findById(id).get();

@@ -46,32 +46,53 @@ public class ControllerProducto {
         }
     }
 
-    //@GetMapping("{cod}")
-    //public ResponseEntity<Producto> buscarProductoCod (@PathVariable String cod){
-        //try{
-            //Producto producto = productoService.findAll(cod);
-            //return ResponseEntity.ok(producto);
-        //}catch(Exception e){
-            //return ResponseEntity.notFound().build();
-        //}
-    //}
-
-
-    @PutMapping("{id}")
-    public ResponseEntity<Producto> actualizarProducto (@PathVariable int id , @RequestBody Producto producto){
-        try {
-            Producto pro = productoService.BuscarPorIdId(id);
-            pro.setProductoId(producto.getProductoId());
-            pro.setNombreProducto(producto.getNombreProducto());
-            pro.setMarca(producto.getMarca());
-            pro.setCodigoDeBarras(producto.getCodigoDeBarras());
-            pro.setPrecioProducto(producto.getPrecioProducto());
-            productoService.GuardarProductos(pro);
+    @GetMapping("cod/{cod}")
+    public ResponseEntity<Producto> buscarPorCod (@PathVariable String cod){
+        try{
+            Producto producto = productoService.BuscarPorCod(cod);
             return ResponseEntity.ok(producto);
-        } catch (Exception e) {
+        }catch(Exception e){
             return ResponseEntity.notFound().build();
         }
     }
+
+
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable int id, @RequestBody Producto producto) {
+    try {
+        Producto pro = productoService.BuscarPorIdId(id);
+        if (pro == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Evitar cambiar el ID desde el cuerpo
+        pro.setNombreProducto(producto.getNombreProducto());
+        pro.setMarca(producto.getMarca());
+        pro.setCod(producto.getCod());
+        pro.setPrecioProducto(producto.getPrecioProducto());
+
+        productoService.GuardarProductos(pro);
+        return ResponseEntity.ok(pro);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    }
+
+    //@PutMapping("Actualizar/{id}")
+    //public ResponseEntity<Producto> actualizarProducto (@PathVariable int id , @RequestBody Producto producto){
+        //try {
+            //Producto pro = productoService.BuscarPorIdId(id);
+            //pro.setProductoId(producto.getProductoId());
+            //pro.setNombreProducto(producto.getNombreProducto());
+            //pro.setMarca(producto.getMarca());
+            //pro.setCodigoDeBarras(producto.getCodigoDeBarras());
+            //pro.setPrecioProducto(producto.getPrecioProducto());
+            //productoService.GuardarProductos(pro);
+            //return ResponseEntity.ok(producto);
+        //} catch (Exception e) {
+            //return ResponseEntity.notFound().build();
+        //}
+    //}
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> eliminarProducto(@PathVariable long id){
